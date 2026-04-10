@@ -1,0 +1,1500 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Naromi — Préparez votre consultation en toute confidentialité</title>
+<meta name="description" content="Naromi vous aide à mettre des mots sur vos symptômes et à les expliquer clairement à votre médecin. Gratuit, sans publicité, open source. Vos données restent sur votre téléphone.">
+<link rel="icon" href="assets/naromi-icon-512.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  /* ── TOKENS ─────────────────────────────────────── */
+  :root {
+    --green-900: #1a3b30;
+    --green-800: #2a5a45;
+    --green-700: #2d6b5e;
+    --green-400: #6db89e;
+    --green-200: #c0e6d6;
+    --green-100: #dff3eb;
+    --green-50:  #edf8f3;
+
+    --bark-900: #1a1510;
+    --bark-800: #2c2218;
+    --bark-700: #4a3d2e;
+    --bark-600: #5c4d3c;
+    --bark-500: #7a6b58;
+    --bark-200: #d4ccc0;
+    --bark-100: #ece6dc;
+    --bark-50:  #faf7f2;
+
+    --white: #ffffff;
+    --red-600: #dc2626;
+    --bark-950: #14100c;
+    --code-orange: #b45309;
+
+    /* Semantic aliases */
+    --color-primary: var(--green-700);
+    --color-primary-hover: var(--green-800);
+    --color-primary-light: var(--green-100);
+    --color-primary-border: var(--green-200);
+    --color-background: var(--bark-50);
+    --color-surface: var(--white);
+    --color-foreground: var(--bark-900);
+    --color-foreground-secondary: var(--bark-600);
+    --color-foreground-muted: var(--bark-500);
+    --color-border: var(--bark-200);
+    --color-destructive: var(--red-600);
+    --color-ring: var(--green-700);
+
+    /* Typography */
+    --font-heading: 'Lora', Georgia, serif;
+    --font-body: 'Figtree', system-ui, sans-serif;
+
+    /* Spacing (4px base) */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --space-8: 32px;
+    --space-10: 40px;
+    --space-12: 48px;
+    --space-16: 64px;
+    --space-20: 80px;
+    --space-24: 96px;
+
+    /* Radius */
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+    --radius-xl: 20px;
+    --radius-full: 9999px;
+
+    /* Focus ring */
+    --focus-ring: 0 0 0 3px var(--color-ring), 0 0 0 5px rgba(45,107,94,0.2);
+  }
+
+  /* ── RESET ──────────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  body {
+    background: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.7;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  img, svg { display: block; max-width: 100%; }
+
+  /* ── FOCUS ──────────────────────────────────────── */
+  :focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+    border-radius: var(--radius-sm);
+  }
+
+  /* ── SKIP LINK ──────────────────────────────────── */
+  .skip-link {
+    position: absolute;
+    top: -100%;
+    left: var(--space-4);
+    background: var(--color-primary);
+    color: var(--white);
+    padding: var(--space-3) var(--space-6);
+    border-radius: 0 0 var(--radius-md) var(--radius-md);
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    z-index: 200;
+    transition: top 0.2s ease;
+  }
+  .skip-link:focus {
+    top: 0;
+    box-shadow: var(--focus-ring);
+  }
+
+  /* ── UTILITIES ──────────────────────────────────── */
+  .container {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 var(--space-6);
+  }
+  .sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* ── SVG ICONS ──────────────────────────────────── */
+  .icon {
+    width: 20px; height: 20px;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
+    flex-shrink: 0;
+  }
+  .icon-sm { width: 16px; height: 16px; }
+  .icon-lg { width: 24px; height: 24px; }
+
+  /* ── NAV ────────────────────────────────────────── */
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: var(--space-4) 0;
+    background: rgba(250,247,242,0.92);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+  }
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    text-decoration: none;
+    font-family: var(--font-heading);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--color-foreground);
+    letter-spacing: -0.5px;
+  }
+  .nav-brand:focus-visible { border-radius: var(--radius-sm); }
+  .nav-logo { height: 32px; width: auto; }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    list-style: none;
+  }
+  .nav-links a {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--space-2) var(--space-3);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-foreground-secondary);
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    transition: color 0.2s ease;
+    min-height: 44px;
+  }
+  .nav-links a:hover { color: var(--color-primary); }
+
+  .nav-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    background: var(--color-primary);
+    color: var(--white);
+    font-size: 14px;
+    font-weight: 600;
+    padding: var(--space-3) var(--space-5);
+    border-radius: var(--radius-full);
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.15s ease;
+    min-height: 44px;
+  }
+  .nav-cta:hover { background: var(--color-primary-hover); transform: translateY(-1px); }
+  .nav-cta:focus-visible { border-radius: var(--radius-full); }
+
+  /* Mobile menu toggle */
+  .nav-toggle {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 44px; height: 44px;
+    background: none;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    color: var(--color-foreground);
+  }
+
+  /* ── HERO ───────────────────────────────────────── */
+  .hero {
+    padding: 140px 0 var(--space-20);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 600px 500px at 75% 40%, rgba(45,107,94,0.06) 0%, transparent 70%),
+      radial-gradient(ellipse 400px 400px at 15% 80%, rgba(45,107,94,0.04) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .hero-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-16);
+    align-items: center;
+    position: relative;
+  }
+  /* Shared tag/badge pattern */
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: 13px;
+    font-weight: 600;
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-full);
+    width: fit-content;
+  }
+  .tag--light {
+    background: var(--color-primary-light);
+    border: 1px solid var(--color-primary-border);
+    color: var(--color-primary);
+  }
+  .tag--dark {
+    background: rgba(45,107,94,0.2);
+    border: 1px solid rgba(45,107,94,0.35);
+    color: var(--green-400);
+  }
+  .hero-badge { margin-bottom: var(--space-6); }
+  .hero h1 {
+    font-family: var(--font-heading);
+    font-size: clamp(34px, 4.5vw, 56px);
+    line-height: 1.12;
+    letter-spacing: -1px;
+    color: var(--color-foreground);
+    margin-bottom: var(--space-6);
+  }
+  .hero h1 em { font-style: italic; color: var(--color-primary); }
+
+  .hero-desc {
+    font-size: 18px;
+    color: var(--color-foreground-secondary);
+    line-height: 1.7;
+    font-weight: 400;
+    margin-bottom: var(--space-8);
+    max-width: 500px;
+  }
+  .hero-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    background: var(--bark-900);
+    color: var(--bark-50);
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 600;
+    padding: var(--space-4) var(--space-6);
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.15s ease;
+    align-self: flex-start;
+    min-height: 48px;
+  }
+  .btn-primary:hover { background: var(--color-primary); transform: translateY(-2px); }
+  .btn-primary:focus-visible { border-radius: var(--radius-lg); }
+
+  .hero-trust {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: 14px;
+    color: var(--color-foreground-muted);
+  }
+  .hero-trust-sep {
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: var(--green-200);
+  }
+
+  /* Phone mockup */
+  .hero-visual {
+    display: flex;
+    justify-content: center;
+  }
+  .phone {
+    width: 280px;
+    background: var(--bark-900);
+    border-radius: 40px;
+    padding: 12px;
+    box-shadow:
+      0 40px 80px rgba(26,21,16,0.22),
+      0 8px 24px rgba(26,21,16,0.12);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .phone { animation: float 5s ease-in-out infinite; will-change: transform; }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  .phone-notch {
+    width: 80px; height: 24px;
+    background: var(--bark-900);
+    border-radius: 0 0 16px 16px;
+    margin: 0 auto 8px;
+  }
+  .phone-screen {
+    background: var(--bark-50);
+    border-radius: 30px;
+    padding: var(--space-5) var(--space-4);
+    min-height: 480px;
+  }
+  .phone-status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-5);
+    font-size: 11px;
+    color: var(--bark-500);
+    font-weight: 600;
+  }
+  .phone-app-title {
+    font-family: var(--font-heading);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--bark-900);
+    margin-bottom: 2px;
+  }
+  .phone-date {
+    font-size: 12px;
+    color: var(--bark-500);
+    margin-bottom: var(--space-4);
+  }
+  .phone-private-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--green-100);
+    border: 1px solid var(--green-200);
+    color: var(--green-700);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 5px 10px;
+    border-radius: 8px;
+    margin-bottom: var(--space-4);
+    width: fit-content;
+  }
+  .phone-private-badge .icon { width: 14px; height: 14px; }
+  .phone-entry {
+    background: var(--bark-100);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    margin-bottom: var(--space-2);
+    border-left: 3px solid var(--bark-200);
+  }
+  .phone-entry.active {
+    border-left-color: var(--green-700);
+    border-left-width: 5px;
+    background: var(--green-50);
+  }
+  .phone-entry-day {
+    font-size: 10px;
+    color: var(--bark-500);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+    text-transform: uppercase;
+  }
+  .phone-entry-text {
+    font-size: 12px;
+    color: var(--bark-600);
+    font-style: italic;
+    line-height: 1.4;
+  }
+  .phone-btn-mock {
+    width: 100%;
+    background: var(--green-700);
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    font-size: 13px;
+    font-weight: 600;
+    margin-top: var(--space-4);
+    font-family: var(--font-body);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    pointer-events: none;
+  }
+  .phone-btn-mock .icon { width: 16px; height: 16px; }
+  .phone-lock {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    margin-top: var(--space-2);
+    font-size: 10px;
+    color: var(--bark-500);
+  }
+  .phone-lock .icon { width: 12px; height: 12px; }
+
+  /* ── SECTION SHARED ─────────────────────────────── */
+  section { padding: var(--space-24) 0; }
+  .section-tag { margin-bottom: var(--space-5); }
+  .section-title {
+    font-family: var(--font-heading);
+    font-size: clamp(28px, 3.8vw, 44px);
+    line-height: 1.15;
+    letter-spacing: -0.8px;
+    color: var(--color-foreground);
+    margin-bottom: var(--space-4);
+  }
+  .section-title em { font-style: italic; color: var(--color-primary); }
+  .section-lead {
+    font-size: 18px;
+    color: var(--color-foreground-secondary);
+    font-weight: 400;
+    line-height: 1.7;
+    max-width: 540px;
+  }
+
+  /* ── HOW IT WORKS ───────────────────────────────── */
+  #how { background: var(--bark-100); }
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: var(--bark-200);
+    margin-top: var(--space-12);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+  }
+  .step {
+    background: var(--bark-100);
+    padding: var(--space-8) var(--space-6);
+    transition: background 0.2s ease;
+  }
+  .step:hover { background: var(--bark-50); }
+  /* Shared icon wrapper */
+  .icon-wrap {
+    width: 40px; height: 40px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .step-icon-wrap {
+    width: 48px; height: 48px;
+    background: var(--color-primary-light);
+    border: 1px solid var(--color-primary-border);
+    color: var(--color-primary);
+    margin-bottom: var(--space-5);
+  }
+  .step-title {
+    font-family: var(--font-heading);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--color-foreground);
+    margin-bottom: var(--space-3);
+    line-height: 1.25;
+  }
+  .step-desc {
+    font-size: 15px;
+    color: var(--color-foreground-secondary);
+    line-height: 1.7;
+  }
+
+  /* ── PRIVACY ────────────────────────────────────── */
+  #privacy {
+    background: var(--bark-900);
+    color: var(--bark-50);
+    position: relative;
+    overflow: hidden;
+  }
+  #privacy::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 500px 400px at 85% 20%, rgba(45,107,94,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 300px 400px at 5% 90%, rgba(45,107,94,0.08) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .privacy-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-20);
+    align-items: center;
+    position: relative;
+  }
+  .privacy-tag { margin-bottom: var(--space-5); }
+  .privacy-headline {
+    font-family: var(--font-heading);
+    font-size: clamp(30px, 4vw, 50px);
+    line-height: 1.1;
+    letter-spacing: -1px;
+    color: var(--bark-50);
+    margin-bottom: var(--space-6);
+  }
+  .privacy-headline em { font-style: italic; color: var(--green-400); }
+  .privacy-body {
+    font-size: 18px;
+    color: rgba(250,247,242,0.65);
+    font-weight: 400;
+    line-height: 1.75;
+    margin-bottom: var(--space-8);
+  }
+  .privacy-body strong { color: var(--green-400); font-weight: 600; }
+
+  .promises { display: flex; flex-direction: column; gap: var(--space-3); }
+  .promise {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-4);
+    padding: var(--space-4) var(--space-5);
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: var(--radius-lg);
+    transition: background 0.2s ease;
+  }
+  .promise:hover { background: rgba(255,255,255,0.07); }
+  .promise-icon {
+    background: rgba(45,107,94,0.25);
+    color: var(--green-400);
+  }
+  .promise-title { font-size: 15px; font-weight: 600; color: var(--bark-50); margin-bottom: 2px; }
+  .promise-desc { font-size: 14px; color: rgba(250,247,242,0.65); line-height: 1.55; }
+
+  /* Privacy data flow visual */
+  .privacy-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: var(--radius-xl);
+    padding: var(--space-6);
+  }
+  .privacy-card-header {
+    font-family: var(--font-heading);
+    font-size: 16px;
+    color: var(--bark-50);
+    margin-bottom: var(--space-6);
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .data-flow { display: flex; flex-direction: column; gap: 0; }
+  .data-node {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+    background: rgba(255,255,255,0.04);
+    margin-bottom: var(--space-1);
+  }
+  .node-icon { /* colors via .node-phone / .node-cloud / .node-doc */ }
+  .node-phone { background: rgba(45,107,94,0.25); color: var(--green-400); }
+  .node-cloud { background: rgba(255,255,255,0.06); color: rgba(250,247,242,0.5); }
+  .node-doc { background: rgba(45,107,94,0.25); color: var(--green-400); }
+  .node-label { font-size: 14px; font-weight: 600; color: var(--bark-50); }
+  .node-sub { font-size: 12px; color: rgba(250,247,242,0.65); }
+  .data-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: var(--radius-sm);
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+  .data-badge.kept {
+    background: rgba(45,107,94,0.25);
+    border: 1px solid rgba(45,107,94,0.4);
+    color: var(--green-400);
+  }
+  .data-badge.erased {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: rgba(250,247,242,0.6);
+  }
+  .connector-line {
+    width: 2px; height: 16px;
+    background: rgba(255,255,255,0.1);
+    margin-left: 36px;
+  }
+
+  /* ── BEFORE / AFTER ─────────────────────────────── */
+  #demo { background: var(--color-background); }
+  .ba-container {
+    margin-top: var(--space-12);
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: stretch;
+    background: var(--bark-200);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+  }
+  .ba-side { padding: var(--space-8) var(--space-6); }
+  .ba-side.left { background: var(--bark-100); }
+  .ba-side.right { background: var(--bark-50); }
+  .ba-header {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    margin-bottom: var(--space-5);
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid var(--bark-200);
+  }
+  .ba-header-before { color: var(--bark-500); }
+  .ba-header-after { color: var(--green-700); }
+  .ba-entry {
+    background: var(--bark-50);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    margin-bottom: var(--space-2);
+    border-left: 3px solid var(--bark-200);
+  }
+  .ba-day {
+    font-size: 10px;
+    color: var(--bark-500);
+    font-weight: 600;
+    margin-bottom: 2px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .ba-text {
+    font-size: 14px;
+    color: var(--bark-600);
+    font-style: italic;
+    line-height: 1.55;
+  }
+  .ba-divider {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0 var(--space-4);
+    background: var(--bark-100);
+    gap: var(--space-2);
+  }
+  .ba-arrow {
+    color: var(--green-700);
+    display: flex;
+  }
+  .ba-divider-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--green-700);
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+  }
+  .ba-result {
+    background: var(--green-700);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    color: var(--white);
+    font-size: 15px;
+    line-height: 1.75;
+  }
+
+  /* ── OPEN SOURCE ────────────────────────────────── */
+  #opensource {
+    background: var(--green-50);
+    border-top: 1px solid var(--green-200);
+    border-bottom: 1px solid var(--green-200);
+  }
+  .os-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-16);
+    align-items: center;
+  }
+  .os-title {
+    font-family: var(--font-heading);
+    font-size: clamp(28px, 3.5vw, 42px);
+    line-height: 1.15;
+    letter-spacing: -0.8px;
+    color: var(--color-foreground);
+    margin-bottom: var(--space-4);
+  }
+  .os-title em { font-style: italic; color: var(--color-primary); }
+  .os-body {
+    font-size: 17px;
+    color: var(--color-foreground-secondary);
+    font-weight: 400;
+    line-height: 1.7;
+    margin-bottom: var(--space-6);
+  }
+  .os-points { display: flex; flex-direction: column; gap: var(--space-3); }
+  .os-point {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-size: 15px;
+    color: var(--color-foreground-secondary);
+  }
+  .os-check {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: var(--green-200);
+    border: 1px solid var(--green-200);
+    color: var(--green-800);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .os-check .icon { width: 14px; height: 14px; }
+
+  /* Code visual */
+  .os-visual {
+    background: var(--white);
+    border: 1px solid var(--green-200);
+    border-radius: var(--radius-xl);
+    padding: var(--space-6);
+    font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+    font-size: 13px;
+    color: var(--bark-600);
+    line-height: 1.9;
+    box-shadow: 0 8px 24px rgba(45,107,94,0.06);
+  }
+  .os-visual-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-5);
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid var(--bark-200);
+  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-r { background: #e5484d; }
+  .dot-y { background: #f5a623; }
+  .dot-g { background: #46a758; }
+  .os-visual-title {
+    font-size: 11px;
+    font-family: var(--font-body);
+    color: var(--bark-500);
+    margin-left: var(--space-2);
+  }
+  .code-comment { color: var(--bark-500); font-style: italic; }
+  .code-key { color: var(--green-700); font-weight: 600; }
+  .code-val { color: var(--code-orange); font-style: italic; }
+  .code-green { color: var(--green-700); font-weight: 600; }
+
+  /* ── DOWNLOAD CTA ───────────────────────────────── */
+  #download {
+    background: var(--bark-900);
+    padding: var(--space-24) 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  #download::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 600px 400px at 50% 50%, rgba(45,107,94,0.1) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .dl-content { position: relative; }
+  .dl-tag { margin-bottom: var(--space-6); }
+  .dl-title {
+    font-family: var(--font-heading);
+    font-size: clamp(30px, 4.5vw, 50px);
+    line-height: 1.1;
+    letter-spacing: -1px;
+    color: var(--bark-50);
+    margin-bottom: var(--space-5);
+  }
+  .dl-title em { font-style: italic; color: var(--green-400); }
+  .dl-sub {
+    font-size: 18px;
+    color: rgba(250,247,242,0.65);
+    font-weight: 400;
+    margin-bottom: var(--space-10);
+  }
+  .dl-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+  }
+  .store-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: var(--bark-50);
+    padding: var(--space-4) var(--space-6);
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+    transition: background 0.2s ease, transform 0.15s ease;
+    min-width: 190px;
+    min-height: 56px;
+    cursor: pointer;
+  }
+  .store-btn:hover { background: rgba(255,255,255,0.14); transform: translateY(-2px); }
+  .store-btn:focus-visible { border-radius: var(--radius-lg); }
+  .store-icon { display: flex; }
+  .store-icon svg { width: 28px; height: 28px; }
+  .store-label { text-align: left; }
+  .store-sub { font-size: 11px; color: rgba(250,247,242,0.65); display: block; }
+  .store-name { font-size: 16px; font-weight: 600; display: block; }
+  .dl-note {
+    font-size: 13px;
+    color: rgba(250,247,242,0.55);
+    margin-top: var(--space-6);
+  }
+
+  /* ── FOOTER ─────────────────────────────────────── */
+  footer {
+    background: var(--bark-950);
+    padding: var(--space-10) 0;
+  }
+  .footer-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .footer-logo { height: 28px; width: auto; }
+  .footer-links {
+    display: flex;
+    gap: var(--space-6);
+    list-style: none;
+  }
+  .footer-links a {
+    font-size: 14px;
+    color: rgba(250,247,242,0.65);
+    text-decoration: none;
+    transition: color 0.2s ease;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .footer-links a:hover { color: var(--green-400); }
+  .footer-copy { font-size: 13px; color: rgba(250,247,242,0.5); }
+
+  /* ── SCROLL REVEAL ──────────────────────────────── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .stagger-child { opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease; }
+  .stagger-visible { opacity: 1; transform: translateY(0); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal, .stagger-child { opacity: 1; transform: none; transition: none; }
+  }
+
+  /* ── RESPONSIVE ─────────────────────────────────── */
+  @media (max-width: 1024px) {
+    .hero-inner { gap: var(--space-10); }
+    .privacy-inner { gap: var(--space-12); }
+  }
+
+  @media (max-width: 840px) {
+    .nav-links { display: none; }
+    .nav-toggle { display: flex; }
+    .nav-links.open {
+      display: flex;
+      flex-direction: column;
+      position: absolute;
+      top: 100%;
+      left: 0; right: 0;
+      background: rgba(250,247,242,0.98);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: var(--space-4) var(--space-6);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    section { padding: var(--space-16) 0; }
+    .hero { padding: 100px 0 var(--space-12); }
+
+    .hero-inner,
+    .privacy-inner,
+    .os-inner {
+      grid-template-columns: 1fr;
+      gap: var(--space-10);
+    }
+
+    .phone { width: 240px; }
+
+    .steps { grid-template-columns: 1fr; }
+
+    .ba-container {
+      grid-template-columns: 1fr;
+    }
+    .ba-divider {
+      flex-direction: row;
+      padding: var(--space-4);
+      writing-mode: unset;
+    }
+    .ba-divider-label { writing-mode: horizontal-tb; transform: none; }
+
+    footer .footer-inner {
+      flex-direction: column;
+      gap: var(--space-6);
+      text-align: center;
+    }
+    .footer-links { flex-wrap: wrap; justify-content: center; }
+  }
+
+  @media (max-width: 480px) {
+    .container { padding: 0 var(--space-4); }
+    .hero h1 { font-size: 30px; }
+    .dl-buttons { flex-direction: column; align-items: center; }
+    .store-btn { width: 100%; max-width: 280px; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SVG Sprite (hidden) -->
+<svg xmlns="http://www.w3.org/2000/svg" class="sr-only" aria-hidden="true">
+  <defs>
+    <symbol id="icon-shield-check" viewBox="0 0 24 24">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+      <polyline points="9 12 12 15 16 10"/>
+    </symbol>
+    <symbol id="icon-lock" viewBox="0 0 24 24">
+      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+      <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+    </symbol>
+    <symbol id="icon-smartphone" viewBox="0 0 24 24">
+      <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+      <line x1="12" y1="18" x2="12.01" y2="18"/>
+    </symbol>
+    <symbol id="icon-mic" viewBox="0 0 24 24">
+      <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+      <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+      <line x1="12" y1="19" x2="12" y2="23"/>
+      <line x1="8" y1="23" x2="16" y2="23"/>
+    </symbol>
+    <symbol id="icon-calendar" viewBox="0 0 24 24">
+      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+      <line x1="16" y1="2" x2="16" y2="6"/>
+      <line x1="8" y1="2" x2="8" y2="6"/>
+      <line x1="3" y1="10" x2="21" y2="10"/>
+    </symbol>
+    <symbol id="icon-file-text" viewBox="0 0 24 24">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+      <polyline points="14 2 14 8 20 8"/>
+      <line x1="16" y1="13" x2="8" y2="13"/>
+      <line x1="16" y1="17" x2="8" y2="17"/>
+      <polyline points="10 9 9 9 8 9"/>
+    </symbol>
+    <symbol id="icon-sparkles" viewBox="0 0 24 24">
+      <path d="M12 3l1.912 5.813a2 2 0 0 0 1.275 1.275L21 12l-5.813 1.912a2 2 0 0 0-1.275 1.275L12 21l-1.912-5.813a2 2 0 0 0-1.275-1.275L3 12l5.813-1.912a2 2 0 0 0 1.275-1.275L12 3z"/>
+      <path d="M5 3v4"/>
+      <path d="M19 17v4"/>
+      <path d="M3 5h4"/>
+      <path d="M17 19h4"/>
+    </symbol>
+    <symbol id="icon-eye" viewBox="0 0 24 24">
+      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+      <circle cx="12" cy="12" r="3"/>
+    </symbol>
+    <symbol id="icon-check" viewBox="0 0 24 24">
+      <polyline points="20 6 9 17 4 12"/>
+    </symbol>
+    <symbol id="icon-x" viewBox="0 0 24 24">
+      <line x1="18" y1="6" x2="6" y2="18"/>
+      <line x1="6" y1="6" x2="18" y2="18"/>
+    </symbol>
+    <symbol id="icon-arrow-right" viewBox="0 0 24 24">
+      <line x1="5" y1="12" x2="19" y2="12"/>
+      <polyline points="12 5 19 12 12 19"/>
+    </symbol>
+    <symbol id="icon-download" viewBox="0 0 24 24">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+      <polyline points="7 10 12 15 17 10"/>
+      <line x1="12" y1="15" x2="12" y2="3"/>
+    </symbol>
+    <symbol id="icon-zap" viewBox="0 0 24 24">
+      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+    </symbol>
+    <symbol id="icon-user-x" viewBox="0 0 24 24">
+      <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+      <circle cx="8.5" cy="7" r="4"/>
+      <line x1="18" y1="8" x2="23" y2="13"/>
+      <line x1="23" y1="8" x2="18" y2="13"/>
+    </symbol>
+    <symbol id="icon-refresh-cw" viewBox="0 0 24 24">
+      <polyline points="23 4 23 10 17 10"/>
+      <polyline points="1 20 1 14 7 14"/>
+      <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+    </symbol>
+    <symbol id="icon-menu" viewBox="0 0 24 24">
+      <line x1="3" y1="12" x2="21" y2="12"/>
+      <line x1="3" y1="6" x2="21" y2="6"/>
+      <line x1="3" y1="18" x2="21" y2="18"/>
+    </symbol>
+    <symbol id="icon-search" viewBox="0 0 24 24">
+      <circle cx="11" cy="11" r="8"/>
+      <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- Skip to main content -->
+<a href="#main" class="skip-link">Aller au contenu principal</a>
+
+<!-- NAV -->
+<nav class="nav" aria-label="Navigation principale">
+  <div class="container nav-inner">
+    <a href="/" class="nav-brand" aria-label="Naromi — Accueil">
+      <img src="assets/naromi-logo-light-transparent.svg" alt="Naromi" width="124" height="58" class="nav-logo">
+    </a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="nav-menu" aria-label="Ouvrir le menu">
+      <svg class="icon" aria-hidden="true"><use href="#icon-menu"/></svg>
+    </button>
+    <ul class="nav-links" id="nav-menu" role="list">
+      <li><a href="#how">Comment ça marche</a></li>
+      <li><a href="#privacy">Confidentialité</a></li>
+      <li><a href="#opensource">Open source</a></li>
+    </ul>
+    <a href="#download" class="nav-cta">
+      <svg class="icon icon-sm" aria-hidden="true"><use href="#icon-download"/></svg>
+      Télécharger
+    </a>
+  </div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<main id="main">
+
+  <!-- HERO -->
+  <section class="hero" aria-labelledby="hero-heading">
+    <div class="hero-bg" aria-hidden="true"></div>
+    <div class="container">
+      <div class="hero-inner">
+        <div>
+          <div class="tag tag--light hero-badge">
+            <svg class="icon icon-sm" aria-hidden="true"><use href="#icon-shield-check"/></svg>
+            100% privé · Aucune donnée collectée
+          </div>
+          <h1 id="hero-heading">Mettez des mots sur<br><em>ce que vous ressentez.</em></h1>
+          <p class="hero-desc">Naromi vous aide à mettre des mots sur vos symptômes et à les expliquer clairement à votre médecin. Sans créer de compte. Sans stocker quoi que ce soit en ligne.</p>
+          <div class="hero-actions">
+            <a href="#download" class="btn-primary">
+              <svg class="icon" aria-hidden="true"><use href="#icon-download"/></svg>
+              Télécharger gratuitement
+            </a>
+            <p class="hero-trust">
+              <span>Gratuit</span>
+              <span class="hero-trust-sep" aria-hidden="true"></span>
+              <span>Sans publicité</span>
+              <span class="hero-trust-sep" aria-hidden="true"></span>
+              <span>Open source</span>
+            </p>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <div class="phone" role="img" aria-label="Aperçu de l'application Naromi sur un smartphone">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div class="phone-status">
+                <span>9:41</span>
+                <span aria-hidden="true">&#9679; &#9679; &#9650;</span>
+              </div>
+              <div class="phone-app-title">Naromi</div>
+              <div class="phone-date">Journal — cette semaine</div>
+              <div class="phone-private-badge">
+                <svg class="icon" aria-hidden="true"><use href="#icon-lock"/></svg>
+                Données stockées localement
+              </div>
+              <div class="phone-entry">
+                <div class="phone-entry-day">Lundi</div>
+                <div class="phone-entry-text">"J'ai mal au ventre après le repas..."</div>
+              </div>
+              <div class="phone-entry">
+                <div class="phone-entry-day">Mercredi</div>
+                <div class="phone-entry-text">"Encore les crampes ce midi..."</div>
+              </div>
+              <div class="phone-entry active">
+                <div class="phone-entry-day">Vendredi</div>
+                <div class="phone-entry-text">"Toujours là, surtout avec le pain..."</div>
+              </div>
+              <div class="phone-btn-mock">
+                <svg class="icon" aria-hidden="true"><use href="#icon-sparkles"/></svg>
+                Préparer ma consultation
+              </div>
+              <div class="phone-lock">
+                <svg class="icon" aria-hidden="true"><use href="#icon-lock"/></svg>
+                Rien ne quitte votre téléphone
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="how" aria-labelledby="how-heading">
+    <div class="container">
+      <div class="reveal">
+        <div class="tag tag--light section-tag">
+          <svg class="icon icon-sm" aria-hidden="true"><use href="#icon-sparkles"/></svg>
+          Comment ça marche
+        </div>
+        <h2 class="section-title" id="how-heading">Trois étapes,<br><em>deux minutes.</em></h2>
+        <p class="section-lead">Pas besoin d'être médecin pour utiliser Naromi. Parlez normalement, Naromi fait le reste.</p>
+      </div>
+      <div class="steps reveal" role="list">
+        <div class="step" role="listitem">
+          <div class="icon-wrap step-icon-wrap" aria-hidden="true">
+            <svg class="icon icon-lg"><use href="#icon-mic"/></svg>
+          </div>
+          <h3 class="step-title">Dites comment vous vous sentez</h3>
+          <p class="step-desc">Parlez à voix haute ou écrivez librement, comme si vous expliquiez à un ami. "J'ai mal ici depuis trois jours, surtout le matin..." Pas besoin de termes médicaux.</p>
+        </div>
+        <div class="step" role="listitem">
+          <div class="icon-wrap step-icon-wrap" aria-hidden="true">
+            <svg class="icon icon-lg"><use href="#icon-calendar"/></svg>
+          </div>
+          <h3 class="step-title">Notez au fil des jours</h3>
+          <p class="step-desc">Revenez chaque jour pour ajouter une nouvelle entrée. Naromi se souvient de l'évolution de vos symptômes sur toute la semaine.</p>
+        </div>
+        <div class="step" role="listitem">
+          <div class="icon-wrap step-icon-wrap" aria-hidden="true">
+            <svg class="icon icon-lg"><use href="#icon-file-text"/></svg>
+          </div>
+          <h3 class="step-title">Recevez un résumé clair</h3>
+          <p class="step-desc">Avant votre consultation, Naromi transforme toutes vos notes en un message structuré, complet, que votre médecin peut lire en quelques secondes.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRIVACY -->
+  <section id="privacy" aria-labelledby="privacy-heading">
+    <div class="container">
+      <div class="privacy-inner">
+        <div class="reveal">
+          <div class="tag tag--dark privacy-tag">
+            <svg class="icon icon-sm" aria-hidden="true"><use href="#icon-lock"/></svg>
+            Votre vie privée
+          </div>
+          <h2 class="privacy-headline" id="privacy-heading">Vos symptômes sont<br><em>strictement personnels.</em></h2>
+          <p class="privacy-body">Naromi utilise une intelligence artificielle qui fonctionne <strong>en dehors des grands serveurs</strong> de données. Vos informations médicales ne sont jamais lues, stockées, ni vendues par qui que ce soit.</p>
+          <div class="promises">
+            <div class="promise">
+              <div class="icon-wrap promise-icon" aria-hidden="true">
+                <svg class="icon"><use href="#icon-smartphone"/></svg>
+              </div>
+              <div>
+                <p class="promise-title">Tout reste sur votre téléphone</p>
+                <p class="promise-desc">Votre journal de symptômes est enregistré uniquement sur votre appareil, comme vos photos ou vos contacts.</p>
+              </div>
+            </div>
+            <div class="promise">
+              <div class="icon-wrap promise-icon" aria-hidden="true">
+                <svg class="icon"><use href="#icon-zap"/></svg>
+              </div>
+              <div>
+                <p class="promise-title">L'IA oublie immédiatement</p>
+                <p class="promise-desc">Quand Naromi reformule vos symptômes, l'IA traite le texte puis l'efface aussitôt. Aucune trace n'est conservée.</p>
+              </div>
+            </div>
+            <div class="promise">
+              <div class="icon-wrap promise-icon" aria-hidden="true">
+                <svg class="icon"><use href="#icon-user-x"/></svg>
+              </div>
+              <div>
+                <p class="promise-title">Pas de compte, pas de traçage</p>
+                <p class="promise-desc">Naromi ne connaît pas votre nom, votre adresse e-mail, ni quoi que ce soit vous concernant. Jamais.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="reveal">
+          <div class="privacy-card" role="img" aria-label="Schéma du flux de données : vos données restent sur votre téléphone, l'IA traite et efface, le résumé revient sur votre appareil.">
+            <div class="privacy-card-header">
+              <svg class="icon" aria-hidden="true"><use href="#icon-search"/></svg>
+              Ce qui se passe quand vous utilisez Naromi
+            </div>
+            <div class="data-flow">
+              <div class="data-node">
+                <div class="icon-wrap node-icon node-phone" aria-hidden="true">
+                  <svg class="icon"><use href="#icon-smartphone"/></svg>
+                </div>
+                <div>
+                  <div class="node-label">Votre téléphone</div>
+                  <div class="node-sub">Journal sauvegardé ici uniquement</div>
+                </div>
+                <div class="data-badge kept">
+                  <svg class="icon icon-sm" aria-hidden="true"><use href="#icon-check"/></svg>
+                  Conservé
+                </div>
+              </div>
+              <div class="connector-line" aria-hidden="true"></div>
+              <div class="data-node">
+                <div class="icon-wrap node-icon node-cloud" aria-hidden="true">
+                  <svg class="icon"><use href="#icon-zap"/></svg>
+                </div>
+                <div>
+                  <div class="node-label">Reformulation par l'IA</div>
+                  <div class="node-sub">Traitement instantané, puis effacement</div>
+                </div>
+                <div class="data-badge erased">
+                  <svg class="icon icon-sm" aria-hidden="true"><use href="#icon-x"/></svg>
+                  Effacé
+                </div>
+              </div>
+              <div class="connector-line" aria-hidden="true"></div>
+              <div class="data-node">
+                <div class="icon-wrap node-icon node-doc" aria-hidden="true">
+                  <svg class="icon"><use href="#icon-file-text"/></svg>
+                </div>
+                <div>
+                  <div class="node-label">Résumé pour votre médecin</div>
+                  <div class="node-sub">Revient sur votre téléphone</div>
+                </div>
+                <div class="data-badge kept">
+                  <svg class="icon icon-sm" aria-hidden="true"><use href="#icon-check"/></svg>
+                  Pour vous
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BEFORE / AFTER -->
+  <section id="demo" aria-labelledby="demo-heading">
+    <div class="container">
+      <div class="reveal">
+        <div class="tag tag--light section-tag">
+          <svg class="icon icon-sm" aria-hidden="true"><use href="#icon-refresh-cw"/></svg>
+          Exemple concret
+        </div>
+        <h2 class="section-title" id="demo-heading">Ce que vous dites,<br><em>ce que votre médecin reçoit.</em></h2>
+      </div>
+      <div class="ba-container reveal">
+        <div class="ba-side left">
+          <div class="ba-header ba-header-before">Vos notes de la semaine</div>
+          <div class="ba-entry">
+            <div class="ba-day">Lundi</div>
+            <p class="ba-text">"Je me sens stressé, mon c&oelig;ur s'emballe pour rien"</p>
+          </div>
+          <div class="ba-entry">
+            <div class="ba-day">Jeudi</div>
+            <p class="ba-text">"Du mal à me concentrer au boulot encore aujourd'hui"</p>
+          </div>
+          <div class="ba-entry">
+            <div class="ba-day">Samedi</div>
+            <p class="ba-text">"Ma femme dit que je suis irritable. Les palpitations sont revenues le soir"</p>
+          </div>
+        </div>
+        <div class="ba-divider" aria-hidden="true">
+          <div class="ba-arrow">
+            <svg class="icon icon-lg"><use href="#icon-arrow-right"/></svg>
+          </div>
+          <div class="ba-divider-label">Naromi</div>
+        </div>
+        <div class="ba-side right">
+          <div class="ba-header ba-header-after">Le résumé pour votre médecin</div>
+          <div class="ba-result">
+            <p>Depuis 6 jours : anxiété avec palpitations intermittentes en soirée sans facteur déclenchant identifié, difficultés de concentration au travail persistantes, et irritabilité remarquée par l'entourage. Évolution stable, sans amélioration spontanée.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- OPEN SOURCE -->
+  <section id="opensource" aria-labelledby="os-heading">
+    <div class="container">
+      <div class="os-inner">
+        <div class="reveal">
+          <div class="tag tag--light section-tag">
+            <svg class="icon icon-sm" aria-hidden="true"><use href="#icon-eye"/></svg>
+            Transparent par design
+          </div>
+          <h2 class="os-title" id="os-heading">Le code est<br><em>ouvert à tous.</em></h2>
+          <p class="os-body">Naromi est un projet open source. Cela signifie que n'importe quel développeur dans le monde peut vérifier exactement ce que fait l'application — et confirmer que vos données ne sont pas exploitées.</p>
+          <ul class="os-points" role="list">
+            <li class="os-point">
+              <span class="os-check" aria-hidden="true"><svg class="icon"><use href="#icon-check"/></svg></span>
+              Aucune publicité, jamais
+            </li>
+            <li class="os-point">
+              <span class="os-check" aria-hidden="true"><svg class="icon"><use href="#icon-check"/></svg></span>
+              Aucune revente de données
+            </li>
+            <li class="os-point">
+              <span class="os-check" aria-hidden="true"><svg class="icon"><use href="#icon-check"/></svg></span>
+              Code source vérifiable par tous
+            </li>
+            <li class="os-point">
+              <span class="os-check" aria-hidden="true"><svg class="icon"><use href="#icon-check"/></svg></span>
+              Gratuit pour toujours
+            </li>
+          </ul>
+        </div>
+        <div class="reveal">
+          <div class="os-visual" role="img" aria-label="Extrait de code montrant que Naromi ne collecte aucune donnée personnelle">
+            <div class="os-visual-header" aria-hidden="true">
+              <div class="dot dot-r"></div>
+              <div class="dot dot-y"></div>
+              <div class="dot dot-g"></div>
+              <span class="os-visual-title">naromi — politique données</span>
+            </div>
+            <div aria-hidden="true">
+              <div class="code-comment">// Ce que Naromi collecte</div>
+              <br>
+              <div><span class="code-key">votre_nom</span>: <span class="code-val">null</span></div>
+              <div><span class="code-key">email</span>: <span class="code-val">null</span></div>
+              <div><span class="code-key">localisation</span>: <span class="code-val">null</span></div>
+              <div><span class="code-key">historique_médical</span>: <span class="code-val">null</span></div>
+              <div><span class="code-key">publicités</span>: <span class="code-val">null</span></div>
+              <br>
+              <div class="code-comment">// Ce qui reste sur votre téléphone</div>
+              <br>
+              <div><span class="code-key">journal_symptômes</span>: <span class="code-green">votre_appareil_uniquement</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DOWNLOAD CTA -->
+  <section id="download" aria-labelledby="dl-heading">
+    <div class="container">
+      <div class="dl-content">
+        <div class="tag tag--dark dl-tag">
+          <svg class="icon icon-sm" aria-hidden="true"><use href="#icon-smartphone"/></svg>
+          Disponible gratuitement
+        </div>
+        <h2 class="dl-title" id="dl-heading">Prêt pour votre<br><em>prochaine consultation ?</em></h2>
+        <p class="dl-sub">Gratuit, sans publicité, sans compte. Vos données restent sur votre téléphone.</p>
+        <div class="dl-buttons">
+          <a href="#" class="store-btn" aria-label="Télécharger Naromi sur l'App Store">
+            <span class="store-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+              </svg>
+            </span>
+            <div class="store-label">
+              <span class="store-sub">Télécharger sur</span>
+              <span class="store-name">App Store</span>
+            </div>
+          </a>
+          <a href="#" class="store-btn" aria-label="Télécharger Naromi sur Google Play">
+            <span class="store-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                <path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.199l2.807 1.626a1 1 0 0 1 0 1.732l-2.807 1.626L15.206 12l2.492-2.492zM5.864 2.658L16.8 8.99l-2.302 2.302-8.634-8.634z"/>
+              </svg>
+            </span>
+            <div class="store-label">
+              <span class="store-sub">Disponible sur</span>
+              <span class="store-name">Google Play</span>
+            </div>
+          </a>
+        </div>
+        <p class="dl-note">iOS & Android · Gratuit · Aucun abonnement · Aucune publicité</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container footer-inner">
+    <img src="assets/naromi-logo-dark-transparent.svg" alt="Naromi" width="124" height="58" class="footer-logo">
+    <nav aria-label="Liens du pied de page">
+      <ul class="footer-links" role="list">
+        <li><a href="#">Confidentialité</a></li>
+        <li><a href="#">Code source</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </nav>
+    <p class="footer-copy">&copy; 2026 Naromi &middot; MIT (code) &middot; CC BY-NC-ND 4.0 (contenu)</p>
+  </div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  function initReveal() {
+    if (motionQuery.matches) return;
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+
+        const children = entry.target.querySelectorAll('.step, .promise, .os-point, .ba-entry');
+        children.forEach((child, i) => {
+          child.style.transitionDelay = `${i * 0.08}s`;
+          child.classList.add('stagger-child');
+          requestAnimationFrame(() => child.classList.add('stagger-visible'));
+        });
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+  }
+
+  initReveal();
+
+  // Mobile menu
+  const navToggle = document.querySelector('.nav-toggle');
+  const navMenu = document.getElementById('nav-menu');
+
+  if (navToggle && navMenu) {
+    navToggle.addEventListener('click', () => {
+      const isOpen = navMenu.classList.toggle('open');
+      navToggle.setAttribute('aria-expanded', isOpen);
+    });
+
+    navMenu.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => {
+        navMenu.classList.remove('open');
+        navToggle.setAttribute('aria-expanded', 'false');
+      });
+    });
+  }
+</script>
+</body>
+</html>

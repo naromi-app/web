@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Naromi — Préparez votre consultation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #faf7f2;
+    --cream2: #f3ede3;
+    --cream3: #e8dfd2;
+    --bark: #2c2218;
+    --bark2: #5c4d3c;
+    --bark3: #9c8d7c;
+    --green: #3d6b4a;
+    --green2: #5a8c69;
+    --green3: #c8dece;
+    --green4: #eaf3ec;
+    --warm: #c17f3a;
+    --warm2: #f5e8d0;
+    --serif: 'Lora', Georgia, serif;
+    --sans: 'Plus Jakarta Sans', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--cream);
+    color: var(--bark);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ANIMATIONS */
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-8px); }
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(32px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes shimmer {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.05); opacity: 0.8; }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 16px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(250,247,242,0.92);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(61,107,74,0.08);
+  }
+
+  .nav-brand {
+    font-family: var(--serif);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--bark);
+    letter-spacing: -0.3px;
+  }
+  .nav-brand em { font-style: italic; color: var(--green); }
+
+  .nav-dl {
+    background: var(--green);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 9px 20px;
+    border-radius: 100px;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .nav-dl:hover { background: var(--green2); transform: translateY(-1px); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 100px 32px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 600px 500px at 80% 50%, rgba(61,107,74,0.07) 0%, transparent 70%),
+      radial-gradient(ellipse 400px 300px at 10% 80%, rgba(193,127,58,0.05) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .hero-inner {
+    max-width: 1080px;
+    margin: 0 auto;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: center;
+  }
+
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--green4);
+    border: 1px solid var(--green3);
+    color: var(--green);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 100px;
+    margin-bottom: 24px;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .shield-icon { font-size: 14px; }
+
+  .hero-title {
+    font-family: var(--serif);
+    font-size: clamp(36px, 5vw, 58px);
+    line-height: 1.1;
+    letter-spacing: -1px;
+    color: var(--bark);
+    margin-bottom: 22px;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+  .hero-title em { font-style: italic; color: var(--green); }
+
+  .hero-desc {
+    font-size: 18px;
+    color: var(--bark2);
+    line-height: 1.7;
+    font-weight: 300;
+    margin-bottom: 36px;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+
+  .btn-dl {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--bark);
+    color: var(--cream);
+    font-size: 15px;
+    font-weight: 600;
+    padding: 16px 28px;
+    border-radius: 14px;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+    align-self: flex-start;
+  }
+  .btn-dl:hover { background: var(--green); transform: translateY(-2px); }
+
+  .hero-trust {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--bark3);
+  }
+  .hero-trust-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--green3); }
+
+  /* Phone mockup */
+  .hero-visual {
+    display: flex;
+    justify-content: center;
+    animation: fadeUp 0.8s 0.3s ease both;
+  }
+
+  .phone {
+    width: 280px;
+    background: var(--bark);
+    border-radius: 40px;
+    padding: 12px;
+    box-shadow:
+      0 40px 80px rgba(44,34,24,0.25),
+      0 8px 24px rgba(44,34,24,0.15),
+      inset 0 1px 0 rgba(255,255,255,0.08);
+    animation: float 5s ease-in-out infinite;
+    position: relative;
+  }
+
+  .phone-notch {
+    width: 80px; height: 24px;
+    background: var(--bark);
+    border-radius: 0 0 16px 16px;
+    margin: 0 auto 8px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .phone-screen {
+    background: var(--cream);
+    border-radius: 30px;
+    overflow: hidden;
+    padding: 20px 16px;
+    min-height: 520px;
+  }
+
+  .phone-status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    font-size: 10px;
+    color: var(--bark3);
+    font-weight: 600;
+  }
+
+  .phone-app-title {
+    font-family: var(--serif);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--bark);
+    margin-bottom: 4px;
+  }
+
+  .phone-date {
+    font-size: 11px;
+    color: var(--bark3);
+    margin-bottom: 16px;
+  }
+
+  .phone-private-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--green4);
+    border: 1px solid var(--green3);
+    color: var(--green);
+    font-size: 10px;
+    font-weight: 600;
+    padding: 5px 10px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    width: fit-content;
+  }
+
+  .phone-entry {
+    background: var(--cream2);
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 8px;
+    border-left: 3px solid var(--cream3);
+  }
+  .phone-entry.active { border-left-color: var(--green); }
+
+  .phone-entry-day { font-size: 9px; color: var(--bark3); font-weight: 600; letter-spacing: 0.5px; margin-bottom: 3px; text-transform: uppercase; }
+  .phone-entry-text { font-size: 12px; color: var(--bark2); font-style: italic; line-height: 1.4; }
+
+  .phone-btn {
+    width: 100%;
+    background: var(--green);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 14px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-top: 14px;
+    cursor: pointer;
+    font-family: var(--sans);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .phone-lock {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    margin-top: 10px;
+    font-size: 10px;
+    color: var(--bark3);
+  }
+
+  /* SECTIONS */
+  section { padding: 90px 32px; }
+  .container { max-width: 1080px; margin: 0 auto; }
+
+  .section-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--green4);
+    border: 1px solid var(--green3);
+    color: var(--green);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 14px;
+    border-radius: 100px;
+    margin-bottom: 20px;
+  }
+
+  .section-title {
+    font-family: var(--serif);
+    font-size: clamp(28px, 4vw, 44px);
+    line-height: 1.15;
+    letter-spacing: -0.8px;
+    color: var(--bark);
+    margin-bottom: 16px;
+  }
+  .section-title em { font-style: italic; color: var(--green); }
+
+  .section-lead {
+    font-size: 18px;
+    color: var(--bark2);
+    font-weight: 300;
+    line-height: 1.7;
+    max-width: 520px;
+  }
+
+  /* PRIVACY HERO SECTION */
+  #private {
+    background: var(--bark);
+    color: var(--cream);
+    position: relative;
+    overflow: hidden;
+  }
+
+  #private::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 500px 400px at 90% 20%, rgba(61,107,74,0.15) 0%, transparent 60%),
+      radial-gradient(ellipse 300px 400px at 5% 90%, rgba(61,107,74,0.1) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .privacy-hero-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  .privacy-headline {
+    font-family: var(--serif);
+    font-size: clamp(32px, 4vw, 52px);
+    line-height: 1.1;
+    letter-spacing: -1px;
+    color: var(--cream);
+    margin-bottom: 24px;
+  }
+  .privacy-headline em { font-style: italic; color: var(--green2); }
+
+  .privacy-body {
+    font-size: 18px;
+    color: rgba(250,247,242,0.65);
+    font-weight: 300;
+    line-height: 1.75;
+    margin-bottom: 36px;
+  }
+
+  .privacy-promises {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .privacy-promise {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px 18px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 12px;
+    transition: background 0.2s;
+  }
+  .privacy-promise:hover { background: rgba(255,255,255,0.07); }
+
+  .promise-icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: rgba(61,107,74,0.3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .promise-title { font-size: 14px; font-weight: 600; color: var(--cream); margin-bottom: 2px; }
+  .promise-desc { font-size: 13px; color: rgba(250,247,242,0.5); line-height: 1.5; }
+
+  /* Privacy visual */
+  .privacy-visual { position: relative; }
+
+  .privacy-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 28px;
+    backdrop-filter: blur(10px);
+  }
+
+  .privacy-card-title {
+    font-family: var(--serif);
+    font-size: 16px;
+    color: var(--cream);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .data-flow {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .data-node {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.04);
+    margin-bottom: 4px;
+  }
+
+  .node-icon {
+    width: 38px; height: 38px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .node-phone { background: rgba(61,107,74,0.25); }
+  .node-cloud { background: rgba(255,255,255,0.06); }
+  .node-doc { background: rgba(61,107,74,0.25); }
+
+  .node-label { font-size: 13px; font-weight: 600; color: var(--cream); }
+  .node-sub { font-size: 11px; color: rgba(250,247,242,0.45); }
+
+  .data-connector {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 16px 6px 30px;
+    font-size: 11px;
+    color: rgba(250,247,242,0.35);
+  }
+
+  .connector-line {
+    width: 1px; height: 16px;
+    background: rgba(255,255,255,0.1);
+    margin-left: 18px;
+  }
+
+  .data-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(61,107,74,0.25);
+    border: 1px solid rgba(61,107,74,0.4);
+    color: var(--green2);
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 6px;
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+
+  .data-badge.erased {
+    background: rgba(255,255,255,0.04);
+    border-color: rgba(255,255,255,0.1);
+    color: rgba(250,247,242,0.35);
+  }
+
+  /* HOW IT WORKS */
+  #how { background: var(--cream2); }
+
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: var(--cream3);
+    margin-top: 52px;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .step {
+    background: var(--cream2);
+    padding: 36px 28px;
+    transition: background 0.2s;
+  }
+  .step:hover { background: var(--cream); }
+
+  .step-num {
+    width: 40px; height: 40px;
+    border-radius: 12px;
+    background: var(--green4);
+    border: 1px solid var(--green3);
+    color: var(--green);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700;
+    font-size: 15px;
+    margin-bottom: 18px;
+  }
+
+  .step-icon { font-size: 28px; margin-bottom: 14px; }
+
+  .step-title {
+    font-family: var(--serif);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--bark);
+    margin-bottom: 10px;
+    line-height: 1.2;
+  }
+
+  .step-desc { font-size: 15px; color: var(--bark2); line-height: 1.65; }
+
+  /* BEFORE AFTER */
+  #demo { background: var(--cream); }
+
+  .ba-container {
+    margin-top: 52px;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 0;
+    align-items: stretch;
+    background: var(--cream3);
+    border-radius: 20px;
+    overflow: hidden;
+  }
+
+  .ba-side { padding: 32px 28px; }
+  .ba-side.left { background: var(--cream2); }
+  .ba-side.right { background: var(--cream); }
+
+  .ba-header {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--cream3);
+  }
+  .ba-header.hl { color: var(--bark3); }
+  .ba-header.hr { color: var(--green); }
+
+  .ba-entry {
+    background: var(--cream);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    border-left: 3px solid var(--cream3);
+  }
+
+  .ba-day { font-size: 10px; color: var(--bark3); font-weight: 600; margin-bottom: 4px; letter-spacing: 0.5px; text-transform: uppercase; }
+  .ba-text { font-size: 14px; color: var(--bark2); font-style: italic; line-height: 1.5; }
+
+  .ba-divider {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0 12px;
+    background: var(--cream2);
+    gap: 6px;
+  }
+
+  .ba-arrow { font-size: 22px; color: var(--green); }
+
+  .ba-divider-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--green);
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+  }
+
+  .ba-result {
+    background: var(--green);
+    border-radius: 12px;
+    padding: 20px 18px;
+    color: #fff;
+    font-size: 15px;
+    line-height: 1.75;
+    font-weight: 400;
+  }
+
+  /* TESTIMONIALS */
+  #voices { background: var(--cream2); }
+
+  .voices-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 52px;
+  }
+
+  .voice-card {
+    background: var(--cream);
+    border: 1px solid var(--cream3);
+    border-radius: 16px;
+    padding: 28px 24px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .voice-card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(44,34,24,0.08); }
+
+  .voice-quote {
+    font-family: var(--serif);
+    font-size: 17px;
+    font-style: italic;
+    color: var(--bark);
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+
+  .voice-meta { display: flex; align-items: center; gap: 12px; }
+
+  .voice-avatar {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .va1 { background: var(--green4); }
+  .va2 { background: var(--warm2); }
+  .va3 { background: var(--cream2); }
+
+  .voice-name { font-size: 14px; font-weight: 600; color: var(--bark); }
+  .voice-role { font-size: 12px; color: var(--bark3); }
+
+  /* OPEN SOURCE */
+  #opensource {
+    background: var(--green4);
+    border-top: 1px solid var(--green3);
+    border-bottom: 1px solid var(--green3);
+  }
+
+  .os-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: center;
+  }
+
+  .os-title {
+    font-family: var(--serif);
+    font-size: clamp(28px, 3.5vw, 42px);
+    line-height: 1.15;
+    letter-spacing: -0.8px;
+    color: var(--bark);
+    margin-bottom: 16px;
+  }
+  .os-title em { font-style: italic; color: var(--green); }
+
+  .os-body { font-size: 17px; color: var(--bark2); font-weight: 300; line-height: 1.7; margin-bottom: 28px; }
+
+  .os-points { display: flex; flex-direction: column; gap: 12px; }
+
+  .os-point {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 15px;
+    color: var(--bark2);
+  }
+
+  .os-check {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--green3);
+    border: 1px solid var(--green2);
+    color: var(--green);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+    flex-shrink: 0;
+    font-weight: 700;
+  }
+
+  .os-visual {
+    background: var(--cream);
+    border: 1px solid var(--green3);
+    border-radius: 16px;
+    padding: 28px;
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 13px;
+    color: var(--bark2);
+    line-height: 1.8;
+    box-shadow: 0 8px 24px rgba(61,107,74,0.08);
+  }
+
+  .os-visual-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--cream3);
+  }
+
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-r { background: #ff6b6b; }
+  .dot-y { background: #ffd93d; }
+  .dot-g { background: #6bcb77; }
+
+  .code-comment { color: var(--bark3); }
+  .code-key { color: var(--green); }
+  .code-val { color: var(--warm); }
+
+  /* CTA */
+  #download {
+    background: var(--bark);
+    padding: 90px 32px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  #download::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 600px 400px at 50% 50%, rgba(61,107,74,0.12) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .dl-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(61,107,74,0.2);
+    border: 1px solid rgba(61,107,74,0.3);
+    color: var(--green2);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 100px;
+    margin-bottom: 24px;
+  }
+
+  .dl-title {
+    font-family: var(--serif);
+    font-size: clamp(32px, 5vw, 52px);
+    line-height: 1.1;
+    letter-spacing: -1px;
+    color: var(--cream);
+    margin-bottom: 18px;
+    position: relative;
+  }
+  .dl-title em { font-style: italic; color: var(--green2); }
+
+  .dl-sub { font-size: 18px; color: rgba(250,247,242,0.55); font-weight: 300; margin-bottom: 44px; position: relative; }
+
+  .dl-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    position: relative;
+    flex-wrap: wrap;
+  }
+
+  .store-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: var(--cream);
+    padding: 14px 24px;
+    border-radius: 14px;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+    min-width: 180px;
+  }
+  .store-btn:hover { background: rgba(255,255,255,0.14); transform: translateY(-2px); }
+
+  .store-icon { font-size: 26px; }
+  .store-label { text-align: left; }
+  .store-sub { font-size: 10px; color: rgba(250,247,242,0.45); display: block; }
+  .store-name { font-size: 15px; font-weight: 600; display: block; }
+
+  .dl-note { font-size: 12px; color: rgba(250,247,242,0.3); margin-top: 24px; position: relative; }
+
+  /* FOOTER */
+  footer {
+    background: #1a140e;
+    padding: 40px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .footer-brand {
+    font-family: var(--serif);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--cream);
+  }
+  .footer-brand em { font-style: italic; color: var(--green2); }
+
+  .footer-links {
+    display: flex;
+    gap: 24px;
+    list-style: none;
+  }
+  .footer-links a { font-size: 13px; color: rgba(250,247,242,0.35); text-decoration: none; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--green2); }
+
+  .footer-copy { font-size: 12px; color: rgba(250,247,242,0.2); }
+
+  /* RESPONSIVE */
+  @media (max-width: 840px) {
+    nav { padding: 14px 20px; }
+    section { padding: 64px 20px; }
+    .hero { padding: 90px 20px 56px; }
+    .hero-inner, .privacy-hero-inner, .os-inner { grid-template-columns: 1fr; gap: 40px; }
+    .phone { width: 240px; }
+    .steps, .voices-grid { grid-template-columns: 1fr; }
+    .ba-container { grid-template-columns: 1fr; }
+    .ba-divider { flex-direction: row; padding: 14px; writing-mode: unset; }
+    .ba-divider-label { writing-mode: horizontal-tb; transform: none; }
+    footer { flex-direction: column; gap: 24px; text-align: center; }
+    .footer-links { flex-wrap: wrap; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">Naro<em>mi</em></div>
+  <a href="#download" class="nav-dl">Télécharger gratuitement</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-eyebrow">
+        <span class="shield-icon">🔒</span>
+        Vos données restent sur votre téléphone
+      </div>
+      <h1 class="hero-title">Préparez votre consultation<br><em>en toute confidentialité.</em></h1>
+      <p class="hero-desc">Naromi vous aide à mettre des mots sur vos symptômes et à les expliquer clairement à votre médecin. Sans créer de compte. Sans stocker quoi que ce soit en ligne.</p>
+      <div class="hero-actions">
+        <a href="#download" class="btn-dl">
+          <span>📱</span>
+          Télécharger gratuitement
+        </a>
+        <div class="hero-trust">
+          <div class="hero-trust-dot"></div>
+          Gratuit · Sans publicité · Open source
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="phone-status">
+            <span>9:41</span>
+            <span>● ● ▲</span>
+          </div>
+          <div class="phone-app-title">Naromi</div>
+          <div class="phone-date">Journal — cette semaine</div>
+          <div class="phone-private-badge">
+            🔒 Données stockées localement
+          </div>
+          <div class="phone-entry">
+            <div class="phone-entry-day">Lundi</div>
+            <div class="phone-entry-text">"J'ai mal au ventre après le repas..."</div>
+          </div>
+          <div class="phone-entry">
+            <div class="phone-entry-day">Mercredi</div>
+            <div class="phone-entry-text">"Encore les crampes ce midi..."</div>
+          </div>
+          <div class="phone-entry active">
+            <div class="phone-entry-day">Vendredi</div>
+            <div class="phone-entry-text">"Toujours là, surtout avec le pain..."</div>
+          </div>
+          <button class="phone-btn">
+            <span>✨</span> Préparer ma consultation
+          </button>
+          <div class="phone-lock">🔒 Rien ne quitte votre téléphone</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PRIVATE SECTION -->
+<section id="private">
+  <div class="container">
+    <div class="privacy-hero-inner">
+      <div class="reveal">
+        <div class="section-tag" style="background:rgba(61,107,74,0.2);border-color:rgba(61,107,74,0.35);color:#7aaa82;">
+          🔒 Votre vie privée
+        </div>
+        <h2 class="privacy-headline">Vos symptômes sont<br><em>strictement personnels.</em></h2>
+        <p class="privacy-body">Naromi utilise une intelligence artificielle qui fonctionne <strong style="color:var(--green2)">en dehors des grands serveurs</strong> de données. Vos informations médicales ne sont jamais lues, stockées, ni vendues par qui que ce soit.</p>
+        <div class="privacy-promises">
+          <div class="privacy-promise">
+            <div class="promise-icon">📱</div>
+            <div>
+              <div class="promise-title">Tout reste sur votre téléphone</div>
+              <div class="promise-desc">Votre journal de symptômes est enregistré uniquement sur votre appareil, comme vos photos ou vos contacts.</div>
+            </div>
+          </div>
+          <div class="privacy-promise">
+            <div class="promise-icon">🧹</div>
+            <div>
+              <div class="promise-title">L'IA oublie immédiatement</div>
+              <div class="promise-desc">Quand Naromi reformule vos symptômes, l'IA traite le texte puis l'efface aussitôt. Aucune trace n'est conservée.</div>
+            </div>
+          </div>
+          <div class="privacy-promise">
+            <div class="promise-icon">🚫</div>
+            <div>
+              <div class="promise-title">Pas de compte, pas de traçage</div>
+              <div class="promise-desc">Naromi ne connaît pas votre nom, votre adresse e-mail, ni quoi que ce soit vous concernant. Jamais.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="privacy-visual reveal">
+        <div class="privacy-card">
+          <div class="privacy-card-title">
+            <span>🔍</span> Ce qui se passe quand vous utilisez Naromi
+          </div>
+          <div class="data-flow">
+            <div class="data-node">
+              <div class="node-icon node-phone">📱</div>
+              <div>
+                <div class="node-label">Votre téléphone</div>
+                <div class="node-sub">Journal sauvegardé ici uniquement</div>
+              </div>
+              <div class="data-badge">✓ Conservé</div>
+            </div>
+            <div class="connector-line" style="margin-left:35px;"></div>
+            <div class="data-node">
+              <div class="node-icon node-cloud">⚡</div>
+              <div>
+                <div class="node-label">Reformulation par l'IA</div>
+                <div class="node-sub">Traitement instantané, puis effacement</div>
+              </div>
+              <div class="data-badge erased">✕ Effacé</div>
+            </div>
+            <div class="connector-line" style="margin-left:35px;"></div>
+            <div class="data-node">
+              <div class="node-icon node-doc">📄</div>
+              <div>
+                <div class="node-label">Résumé pour votre médecin</div>
+                <div class="node-sub">Revient sur votre téléphone</div>
+              </div>
+              <div class="data-badge">✓ Pour vous</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-tag">✨ Comment ça marche</div>
+      <h2 class="section-title">Trois étapes,<br><em>deux minutes.</em></h2>
+      <p class="section-lead">Pas besoin d'être médecin pour utiliser Naromi. Parlez normalement, Naromi fait le reste.</p>
+    </div>
+    <div class="steps reveal">
+      <div class="step">
+        <div class="step-icon">🎙️</div>
+        <div class="step-title">Dites comment vous vous sentez</div>
+        <div class="step-desc">Parlez à voix haute ou écrivez librement, comme si vous expliquiez à un ami. "J'ai mal ici depuis trois jours, surtout le matin..." Pas besoin de termes médicaux.</div>
+      </div>
+      <div class="step">
+        <div class="step-icon">📅</div>
+        <div class="step-title">Notez au fil des jours</div>
+        <div class="step-desc">Revenez chaque jour pour ajouter une nouvelle entrée. Naromi se souvient de l'évolution de vos symptômes sur toute la semaine.</div>
+      </div>
+      <div class="step">
+        <div class="step-icon">📋</div>
+        <div class="step-title">Recevez un résumé clair</div>
+        <div class="step-desc">Avant votre consultation, Naromi transforme toutes vos notes en un message structuré, complet, que votre médecin peut lire en quelques secondes.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BEFORE AFTER -->
+<section id="demo">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-tag">🔄 Exemple concret</div>
+      <h2 class="section-title">Ce que vous dites,<br><em>ce que votre médecin reçoit.</em></h2>
+    </div>
+    <div class="ba-container reveal">
+      <div class="ba-side left">
+        <div class="ba-header hl">Vos notes de la semaine</div>
+        <div class="ba-entry">
+          <div class="ba-day">Lundi</div>
+          <div class="ba-text">"Je me sens stressé, mon cœur s'emballe pour rien"</div>
+        </div>
+        <div class="ba-entry">
+          <div class="ba-day">Jeudi</div>
+          <div class="ba-text">"Du mal à me concentrer au boulot encore aujourd'hui"</div>
+        </div>
+        <div class="ba-entry">
+          <div class="ba-day">Samedi</div>
+          <div class="ba-text">"Ma femme dit que je suis irritable. Les palpitations sont revenues le soir"</div>
+        </div>
+      </div>
+      <div class="ba-divider">
+        <div class="ba-arrow">→</div>
+        <div class="ba-divider-label">Naromi</div>
+      </div>
+      <div class="ba-side right">
+        <div class="ba-header hr">Le résumé pour votre médecin</div>
+        <div class="ba-result">
+          Depuis 6 jours : anxiété avec palpitations intermittentes en soirée sans facteur déclenchant identifié, difficultés de concentration au travail persistantes, et irritabilité remarquée par l'entourage. Évolution stable, sans amélioration spontanée.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VOICES -->
+<section id="voices">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-tag">💬 Ce qu'ils en pensent</div>
+      <h2 class="section-title">Ils préparent leurs<br><em>consultations avec Naromi.</em></h2>
+    </div>
+    <div class="voices-grid reveal">
+      <div class="voice-card">
+        <div class="voice-quote">"Je n'arrivais jamais à expliquer clairement à mon médecin ce que je ressentais. Maintenant j'arrive en consultation avec un résumé précis."</div>
+        <div class="voice-meta">
+          <div class="voice-avatar va1">👩</div>
+          <div>
+            <div class="voice-name">Marie, 43 ans</div>
+            <div class="voice-role">Maladie chronique</div>
+          </div>
+        </div>
+      </div>
+      <div class="voice-card">
+        <div class="voice-quote">"Ce qui m'a convaincu, c'est que mes données restent sur mon téléphone. Pour des informations médicales, c'est essentiel."</div>
+        <div class="voice-meta">
+          <div class="voice-avatar va2">👨</div>
+          <div>
+            <div class="voice-name">Thomas, 57 ans</div>
+            <div class="voice-role">Suivi cardiologique</div>
+          </div>
+        </div>
+      </div>
+      <div class="voice-card">
+        <div class="voice-quote">"Simple, efficace, et surtout privé. Mes symptômes sont mes affaires. Naromi ne les partage avec personne."</div>
+        <div class="voice-meta">
+          <div class="voice-avatar va3">👩</div>
+          <div>
+            <div class="voice-name">Sophie, 31 ans</div>
+            <div class="voice-role">Anxiété, suivi psy</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OPEN SOURCE -->
+<section id="opensource">
+  <div class="container">
+    <div class="os-inner">
+      <div class="reveal">
+        <div class="section-tag">👁️ Transparent par design</div>
+        <h2 class="os-title">Le code est<br><em>ouvert à tous.</em></h2>
+        <p class="os-body">Naromi est un projet open source. Cela signifie que n'importe quel développeur dans le monde peut vérifier exactement ce que fait l'application — et confirmer que vos données ne sont pas exploitées.</p>
+        <div class="os-points">
+          <div class="os-point"><div class="os-check">✓</div> Aucune publicité, jamais</div>
+          <div class="os-point"><div class="os-check">✓</div> Aucune revente de données</div>
+          <div class="os-point"><div class="os-check">✓</div> Code source vérifiable par tous</div>
+          <div class="os-point"><div class="os-check">✓</div> Gratuit pour toujours</div>
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="os-visual">
+          <div class="os-visual-header">
+            <div class="dot dot-r"></div>
+            <div class="dot dot-y"></div>
+            <div class="dot dot-g"></div>
+            <span style="font-size:11px;color:var(--bark3);margin-left:8px;">naromi — politique données</span>
+          </div>
+          <div class="code-comment">// Ce que Naromi collecte</div>
+          <br>
+          <div><span class="code-key">votre_nom</span>: <span class="code-val">null</span></div>
+          <div><span class="code-key">email</span>: <span class="code-val">null</span></div>
+          <div><span class="code-key">localisation</span>: <span class="code-val">null</span></div>
+          <div><span class="code-key">historique_médical</span>: <span class="code-val">null</span></div>
+          <div><span class="code-key">publicités</span>: <span class="code-val">null</span></div>
+          <br>
+          <div class="code-comment">// Ce qui reste sur votre téléphone</div>
+          <br>
+          <div><span class="code-key">journal_symptômes</span>: <span style="color:var(--green)">votre_appareil_uniquement</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DOWNLOAD -->
+<section id="download">
+  <div class="container">
+    <div class="dl-tag">📱 Disponible gratuitement</div>
+    <h2 class="dl-title">Prêt pour votre<br><em>prochaine consultation ?</em></h2>
+    <p class="dl-sub">Gratuit, sans publicité, sans compte. Vos données restent sur votre téléphone.</p>
+    <div class="dl-buttons">
+      <a href="#" class="store-btn">
+        <span class="store-icon">🍎</span>
+        <div class="store-label">
+          <span class="store-sub">Télécharger sur</span>
+          <span class="store-name">App Store</span>
+        </div>
+      </a>
+      <a href="#" class="store-btn">
+        <span class="store-icon">▶</span>
+        <div class="store-label">
+          <span class="store-sub">Disponible sur</span>
+          <span class="store-name">Google Play</span>
+        </div>
+      </a>
+    </div>
+    <p class="dl-note">iOS & Android · Gratuit · Aucun abonnement · Aucune publicité</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">Naro<em>mi</em></div>
+  <ul class="footer-links">
+    <li><a href="#">Confidentialité</a></li>
+    <li><a href="#">Code source</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+  <div class="footer-copy">© 2026 Naromi · Apache 2.0</div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        const children = e.target.querySelectorAll('.step, .voice-card, .privacy-promise, .os-point, .ba-entry');
+        children.forEach((child, i) => {
+          child.style.opacity = '0';
+          child.style.transform = 'translateY(16px)';
+          child.style.transition = `opacity 0.5s ${i * 0.08}s ease, transform 0.5s ${i * 0.08}s ease`;
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              child.style.opacity = '1';
+              child.style.transform = 'translateY(0)';
+            });
+          });
+        });
+      }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
